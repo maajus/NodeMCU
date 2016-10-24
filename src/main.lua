@@ -2,16 +2,22 @@
 
 dht11 = require("dht11")
 -- init pins 
-
 L1 = 0
+L2 = 1
+L3 = 2
+L4 = 3
 dht_pin = 4
 button_pin = 8
-gpio.mode(L1, gpio.OUTPUT)
 gpio.mode(button_pin,gpio.INT,gpio.PULLUP)
+
+gpio.mode(L1, gpio.OUTPUT)
 gpio.write(L1, gpio.HIGH)
-
-
-
+gpio.mode(L2, gpio.OUTPUT)
+gpio.write(L2, gpio.HIGH)
+gpio.mode(L3, gpio.OUTPUT)
+gpio.write(L3, gpio.HIGH)
+gpio.mode(L4, gpio.OUTPUT)
+gpio.write(L4, gpio.HIGH)
 
 -- Connect 
 tmr.alarm(0, 1000, 1, function()
