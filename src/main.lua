@@ -1,82 +1,52 @@
 -- main.lua --
+dofile("buttons.lua")
 
-dht11 = require("dht11")
--- init pins 
-L1 = 0
-L2 = 1
-L3 = 2
-L4 = 3
-dht_pin = 4
-button_pin = 8
-gpio.mode(button_pin,gpio.INT,gpio.PULLUP)
-
-gpio.mode(L1, gpio.OUTPUT)
-gpio.write(L1, gpio.HIGH)
-gpio.mode(L2, gpio.OUTPUT)
-gpio.write(L2, gpio.HIGH)
-gpio.mode(L3, gpio.OUTPUT)
-gpio.write(L3, gpio.HIGH)
-gpio.mode(L4, gpio.OUTPUT)
-gpio.write(L4, gpio.HIGH)
-
--- Connect 
-tmr.alarm(0, 1000, 1, function()
-   if wifi.sta.getip() == nil then
-      print("Connecting to AP...\n")
-   else
-      ip, nm, gw=wifi.sta.getip()
-      print("IP Info: \nIP Address: ",ip)
-      print("Netmask: ",nm)
-      print("Gateway Addr: ",gw,'\n')
-      tmr.stop(0)
-   end
-end)
-
- -- Start a simple tcp server
-srv=net.createServer(net.TCP) 
-srv:listen(5555, function(c) 
-  c:on("receive", function(sck, data)
-  
-	if (string.byte(data,1) == 84) then --T  send temp
-		dht11.read(dht_pin);
-		sck:send(dht11.getTemperature());
---		sck:send("\n");
-	elseif (string.byte(data,1) == 72) then --H send humidity
-		dht11.read(dht_pin);
-		sck:send(dht11.getHumidity());
---		sck:send("\n");
-	elseif (string.byte(data,1) == 83) then --S  set pin value
-		gpio.mode(string.byte(data,2)-48, gpio.OUTPUT)
-		gpio.write(string.byte(data,2)-48, string.byte(data,3)-48)
-	elseif (string.byte(data,1) == 71) then --G  get pin value
-		sck:send(gpio.read(string.byte(data,2)-48))
---		sck:send("\n");
-	elseif (string.byte(data,1) == 65) then --A  all info
-		dht11.read(dht_pin);
-		sck:send(data);
-		sck:send(dht11.getTemperature());
-		sck:send("_");
-		sck:send(dht11.getHumidity());
-	elseif (string.byte(data,1) == 76) then --L toggle pin
-		toggle(string.byte(data,2)-48)
-		sck:send(data);
-    else 
-		sck:send("Unknown cmd ");
-		sck:send(data);
---		sck:send("\n");
-    end
-  end)
-end)
-
-function pin1cb()
-    toggle(L1)
+function read_dht()
+    status, temp, humi, temp_dec, humi_dec = dht.read(dht_pin)
+    return temp,humi
 end
-gpio.trig(button_pin, "down",pin1cb)
 
 function toggle (a)
     if (gpio.read(a) == 1) then
-		gpio.write(a,0)
-	else
-		gpio.write(a,1)
-	end
+        gpio.write(a,0)
+    else
+        gpio.write(a,1)
+    end
+end
+
+local state = 0
+function toggle_all()
+    if state == 0 then
+        gpio.write(L0, LIGHTS_ON)
+        gpio.write(L1, LIGHTS_ON)
+        gpio.write(L2, LIGHTS_ON)
+        gpio.write(L3, LIGHTS_ON)
+        state = 1
+    else
+        gpio.write(L0, LIGHTS_OFF)
+        gpio.write(L1, LIGHTS_OFF)
+        gpio.write(L2, LIGHTS_OFF)
+        gpio.write(L3, LIGHTS_OFF)
+        state = 0
+    end
+end
+
+function switch_all(state)
+    gpio.write(L0, state)
+    gpio.write(L1, state)
+    gpio.write(L2, state)
+    gpio.write(L3, state)
+
+end
+
+function disco1()
+
+    switch_all(LIGHTS_OFF)
+    local counter = 0
+    tmr.alarm(0, 500, tmr.ALARM_AUTO, 
+    function()  
+        gpio.write(counter, LIGHTS_ON)
+        counter = counter + 1
+        if counter > 3  then tmr.unregister(0) end
+    end)
 end
