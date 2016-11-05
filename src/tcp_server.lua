@@ -22,17 +22,19 @@ srv:listen(5555, function(c)
             gpio.read(L0) .. "_" ..
             gpio.read(L1) .. "_" ..
             gpio.read(L2) .. "_" ..
-            gpio.read(L3) .. "_");
+            gpio.read(L3));
         elseif (string.byte(data,1) == 76) then --L toggle light
             toggle(string.byte(data,2)-48)
-            sck:send(gpio.read(string.byte(data,2)-48));
+            sck:send("L" .. gpio.read(string.byte(data,2)-48));
         elseif (string.byte(data,1) == 75) then --K toogle all lights
             toggle_all()
-            sck:send(state)
+            sck:send("K" .. state)
         elseif (string.byte(data,1) == 74) then --J switch all lights
-            switch_all(string.byte(data,1))
+            switch_all(string.byte(data,2)-48)
+            sck:send("J" .. string.byte(data,2)-48)
         elseif (string.byte(data,1) == 68) then --D disco 
             disco1()
+            sck:send("D")
         else
             sck:send("ERROR\n");
             sck:send(data);
