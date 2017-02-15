@@ -1,8 +1,8 @@
 -- buttons.lua --
 min_singleClick_time = 20000
-max_singleClick_time = 400000
-B0time = 0
-B0time1 = 0
+max_singleClick_time = 600000
+local B0time = 0
+local B0time1 = 0
 local uart_en = 0
 
 function button0_int()
@@ -119,7 +119,7 @@ gpio.trig(B3,'down',button3_int)
 
 function blinkLED(led, times, interval)
     local sw, count, tobj = true, 0
-    tobj = tmr.alarm(1,interval,tmr.ALARM_AUTO,function ()
+    tobj = tmr.alarm(2,interval,tmr.ALARM_AUTO,function ()
         if (sw) then
             gpio.write(led, gpio.HIGH)
         else
@@ -129,7 +129,7 @@ function blinkLED(led, times, interval)
         sw = not sw
   
         if (count == times) then
-            tmr.stop(1)
+            tmr.stop(2)
             LEDstate()
         end
     end)

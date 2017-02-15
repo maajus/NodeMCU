@@ -12,24 +12,39 @@ print('Chip ID: ',node.chipid())
 print('Heap Size: ',node.heap(),'\n')
 
 -- Configure WiFi
-wifi.sta.setip({ip=IPADR,netmask="255.255.255.0",gateway=IPROUTER})
+--wifi.sta.setip({ip=IPADR,netmask="255.255.255.0",gateway=IPROUTER})
 wifi.sta.config(ssid,pass)
 wifi.sta.sethostname("svetaine")
 
 -- Connect 
-tmr.alarm(0, 1000, 1, function()
+local retry_count = 0
+tmr.alarm(0, 1000, tmr.ALARM_AUTO, function()
    if wifi.sta.getip() == nil then
       print("Connecting to AP...\n")
+      retry_count = retry_count+1
+      if retry_count > 10 then
+          tmr.unregister(0)
+      end
    else
       ip, nm, gw=wifi.sta.getip()
       print("IP Info: \nIP Address: ",ip)
       print("Netmask: ",nm)
       print("Gateway Addr: ",gw,'\n')
-      tmr.stop(0)
+      tmr.unregister(0)
 
          end
 end)
 
+--delay button init for 10s for uart communication after reset
+tmr.alarm(1, 10000, tmr.ALARM_SINGLE, function()
+    tmr.unregister(1)
+
+    gpio.mode(B0,gpio.INT)
+    gpio.mode(B1,gpio.INT)
+    gpio.mode(B2,gpio.INT)
+    gpio.mode(B3,gpio.INT)
+
+end)
 
 
 -- Some SSR are active low...
@@ -62,12 +77,6 @@ gpio.write(L1, LIGHTS_OFF)
 gpio.write(L2, LIGHTS_OFF)
 gpio.write(L3, LIGHTS_OFF)
 gpio.write(LED, 1)
-
-
-gpio.mode(B0,gpio.INT,gpio.PULLUP)
-gpio.mode(B1,gpio.INT,gpio.PULLUP)
-gpio.mode(B2,gpio.INT,gpio.PULLUP)
-gpio.mode(B3,gpio.INT,gpio.PULLUP)
 
 
 
