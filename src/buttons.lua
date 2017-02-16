@@ -7,7 +7,11 @@ local uart_en = 0
 
 function button0_int()
     if(gpio.read(B0) == 1) then
-        if(tmr.now()-B0time1 < min_singleClick_time) then print("fail") return end
+        if(tmr.now()-B0time1 < min_singleClick_time) then 
+            print("fail") 
+            B0time1 = tmr.now()
+            return 
+        end
         B0time1 = tmr.now()
         local du=B0time1-B0time
         if(du > min_singleClick_time and du < max_singleClick_time)then 
@@ -31,7 +35,11 @@ local B1time = 0
 local B1time1 = 0
 function button1_int()
     if(gpio.read(B1) == 1) then
-        if(tmr.now()-B1time1 < min_singleClick_time) then print("fail") return end
+        if(tmr.now()-B1time1 < min_singleClick_time) then 
+            print("fail") 
+            B1time1 = tmr.now()
+            return 
+        end
         B1time1 = tmr.now()
         local du=B1time1-B1time
         if(du > min_singleClick_time and du < max_singleClick_time)then 
@@ -64,7 +72,11 @@ local B2time = 0
 local B2time1 = 0
 function button2_int()
     if(gpio.read(B2) == 1) then
-        if(tmr.now()-B2time1 < min_singleClick_time) then print("fail") return end
+        if(tmr.now()-B2time1 < min_singleClick_time) then 
+            print("fail") 
+            B2time1 = tmr.now()
+            return 
+        end
         B2time1 = tmr.now()
         local du=B2time1-B2time
         if(du > min_singleClick_time and du < max_singleClick_time)then 
@@ -89,7 +101,11 @@ local B3time = 0
 local B3time1 = 0
 function button3_int()
     if(gpio.read(B3) == 1) then
-        if(tmr.now()-B3time1 < min_singleClick_time) then print("fail") return end
+        if(tmr.now()-B3time1 < min_singleClick_time) then 
+            print("fail") 
+            B3time1 = tmr.now()
+            return 
+        end
         B3time1 = tmr.now()
         local du=B3time1-B3time
         if(du > min_singleClick_time and du < max_singleClick_time)then 
@@ -109,12 +125,6 @@ function button3_int()
         B3time = tmr.now()
     end
 end
-
-
-gpio.trig(B0,'down',button0_int)
-gpio.trig(B1,'down',button1_int)
-gpio.trig(B2,'down',button2_int)
-gpio.trig(B3,'down',button3_int)
 
 
 function blinkLED(led, times, interval)

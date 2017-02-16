@@ -44,12 +44,19 @@ tmr.alarm(1, 10000, tmr.ALARM_SINGLE, function()
     gpio.mode(B2,gpio.INT)
     gpio.mode(B3,gpio.INT)
 
+    gpio.trig(B0,'down',button0_int)
+    gpio.trig(B1,'down',button1_int)
+    gpio.trig(B2,'down',button2_int)
+    gpio.trig(B3,'down',button3_int)
+
+
+
 end)
 
 
 -- Some SSR are active low...
-LIGHTS_ON = 0
-LIGHTS_OFF = 1
+LIGHTS_ON = 1
+LIGHTS_OFF = 0
 
 
 ------ init pins
