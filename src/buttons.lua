@@ -1,19 +1,24 @@
 -- buttons.lua --
-min_singleClick_time = 20000
-max_singleClick_time = 600000
-local B0time = 0
-local B0time1 = 0
+-- buttons interrupt callback routines and LED blink functions
+
+min_singleClick_time = 20000 --min single click duration
+max_singleClick_time = 400000 --max single click duration
 local uart_en = 0
 
+local B0time = 0
+local B0time1 = 0
+
 function button0_int()
-    if(gpio.read(B0) == 1) then
-        if(tmr.now()-B0time1 < min_singleClick_time) then 
+    if(gpio.read(B0) == 1) then -- if 1 button released
+       local dur =  tmr.now()-B0time1 --time from previous click
+       if(dur < 0) then  dur = dur +  0x80000000; end -- if tmr overflowed
+       if(dur < min_singleClick_time) then
             print("fail") 
-            B0time1 = tmr.now()
+            B0time1 = tmr.now() -- update click release time
             return 
         end
-        B0time1 = tmr.now()
-        local du=B0time1-B0time
+        B0time1 = tmr.now() -- save click release time
+        local du=B0time1-B0time -- calculate click duration
         if(du > min_singleClick_time and du < max_singleClick_time)then 
             print("B0 click")
             toggle(L0) 
@@ -24,10 +29,10 @@ function button0_int()
             toggle_all() 
             blinkLED(LED,2,120)
         end
-        gpio.trig(B0,'down',button0_int)
+        gpio.trig(B0,'down',button0_int) -- change trigger to falling
     else
-        gpio.trig(B0,'up',button0_int)
-        B0time = tmr.now()
+        gpio.trig(B0,'up',button0_int) -- change trigger to rising
+        B0time = tmr.now() -- save click press time
     end
 end
 
@@ -35,7 +40,9 @@ local B1time = 0
 local B1time1 = 0
 function button1_int()
     if(gpio.read(B1) == 1) then
-        if(tmr.now()-B1time1 < min_singleClick_time) then 
+       local dur =  tmr.now()-B1time1 --time from previous click
+       if(dur < 0) then dur = dur + 0x80000000; end -- if tmr overflowed
+       if(dur < min_singleClick_time) then
             print("fail") 
             B1time1 = tmr.now()
             return 
@@ -72,7 +79,9 @@ local B2time = 0
 local B2time1 = 0
 function button2_int()
     if(gpio.read(B2) == 1) then
-        if(tmr.now()-B2time1 < min_singleClick_time) then 
+       local dur =  tmr.now()-B2time1 --time from previous click
+       if(dur < 0) then dur = dur + 0x80000000; end -- if tmr overflowed
+       if(dur < min_singleClick_time) then
             print("fail") 
             B2time1 = tmr.now()
             return 
@@ -101,7 +110,9 @@ local B3time = 0
 local B3time1 = 0
 function button3_int()
     if(gpio.read(B3) == 1) then
-        if(tmr.now()-B3time1 < min_singleClick_time) then 
+       local dur =  tmr.now()-B3time1 --time from previous click
+       if(dur < 0) then dur = dur + 0x80000000; end -- if tmr overflowed
+       if(dur < min_singleClick_time) then
             print("fail") 
             B3time1 = tmr.now()
             return 
@@ -117,7 +128,6 @@ function button3_int()
             print("B3 long press") 
             blinkLED(LED,2,120)
             restart()
-            --uart.setup(0,115200,8,0,1,0) 
         end
         gpio.trig(B3,'down',button3_int)
     else
@@ -145,7 +155,7 @@ function blinkLED(led, times, interval)
     end)
 end
 
-
+-- turn led on only if no lights are on
 function LEDstate()
     if (gpio.read(L0)==LIGHTS_OFF and
         gpio.read(L1)==LIGHTS_OFF and
@@ -155,9 +165,4 @@ function LEDstate()
     else
         gpio.write(LED,0)
     end
-
 end
-
-
-
-
