@@ -64,6 +64,7 @@ function button1_int()
                 gpio.mode(B2,gpio.INT,gpio.PULLUP)
                 gpio.mode(B3,gpio.INT,gpio.PULLUP)
                 uart_en = 0
+                tmr.stop(1)
             end
 
             blinkLED(LED,2,120)
@@ -95,8 +96,6 @@ function button2_int()
         end
         if(du > max_singleClick_time and du < 2000000)then 
             print("B2 long press") 
-            uart.setup(0,115200,8,0,1,0) 
-            uart_en = 1
             blinkLED(LED,2,120)
         end
         gpio.trig(B2,'down',button2_int)
@@ -126,8 +125,10 @@ function button3_int()
         end
         if(du > max_singleClick_time and du < 2000000)then 
             print("B3 long press") 
-            blinkLED(LED,2,120)
-            restart()
+            uart.setup(0,115200,8,0,1,0) 
+            uart_en = 1
+            blinkLED_cont(LED,90)
+            --restart()
         end
         gpio.trig(B3,'down',button3_int)
     else
@@ -165,4 +166,16 @@ function LEDstate()
     else
         gpio.write(LED,0)
     end
+end
+
+function blinkLED_cont(led, interval)
+    local sw, count, tobj = true, 0
+    tobj = tmr.alarm(1,interval,tmr.ALARM_AUTO,function ()
+        if (sw) then
+            gpio.write(led, gpio.HIGH)
+        else
+            gpio.write(led, gpio.LOW)
+        end
+        sw = not sw
+            end)
 end

@@ -2,13 +2,13 @@
 -- Network Variables
 ssid = "Kosmosas"
 pass = "linkmenulio"
-IPADR = "192.168.1.101"
+IPADR = "192.168.1.104"
 IPROUTER = "192.168.1.1"
-HOSTNAME = "koridorius"
+HOSTNAME = "miegamasis"
 
 -- Some SSR are active low...
-LIGHTS_ON = 0
-LIGHTS_OFF = 1
+LIGHTS_ON = 1
+LIGHTS_OFF = 0
 
 
 -- Configure Wireless Internet
@@ -45,7 +45,7 @@ end)
 
 
 --delay button init for 10s for uart communication after reset
-tmr.alarm(1, 10000, tmr.ALARM_SINGLE, function()
+tmr.alarm(1, 5000, tmr.ALARM_SINGLE, function()
     tmr.unregister(1)
 
     --set gpio mode. Disables uart
