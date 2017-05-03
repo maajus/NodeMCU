@@ -7,8 +7,8 @@ IPROUTER = "192.168.1.254"
 HOSTNAME = "koridorius"
 
 -- Some SSR are active low...
-LIGHTS_ON = 1
-LIGHTS_OFF = 0
+LIGHTS_ON = 0
+LIGHTS_OFF = 1
 
 
 -- Configure Wireless Internet
@@ -66,18 +66,6 @@ tmr.alarm(1, 5000, tmr.ALARM_SINGLE, function()
     gpio.mode(B3, gpio.INT, gpio.PULLUP) 
     gpio.write(B3, gpio.HIGH)
     gpio.trig(B3, 'both', debounce(onChange3))
-
-
-    --    gpio.mode(B0,gpio.INT,gpio.PULLUP)
-    --gpio.mode(B1,gpio.INT,gpio.PULLUP)
-    --gpio.mode(B2,gpio.INT,gpio.PULLUP)
-    --gpio.mode(B3,gpio.INT,gpio.PULLUP)
-
-    --set interrupt callback for pins
-    --gpio.trig(B0,'down',button0_int)
-    --gpio.trig(B1,'down',button1_int)
-    --gpio.trig(B2,'down',button2_int)
-    --gpio.trig(B3,'down',button3_int)
 
 end)
 

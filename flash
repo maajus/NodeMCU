@@ -1,12 +1,9 @@
 #!/bin/bash
 
-if [ $# == 0 ];
-then
 	python2.7 nodemcu-uploader/nodemcu-uploader.py upload  \
-			src/init.lua:init.lua \
+			src/init_$1.lua:init.lua \
+			src/buttons.lua:buttons.lua \
+			src/tcp_server.lua:tcp_server.lua \
 			src/main.lua:main.lua --restart
 
 
-else
-		python2 nodemcu-uploader/nodemcu-uploader.py  upload src/$1.lua:$2.lua --restart
-fi
