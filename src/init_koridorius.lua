@@ -100,6 +100,23 @@ gpio.write(L3, LIGHTS_OFF)
 -- Turn on led
 gpio.write(LED, 1)
 
+-- Button singleclick custom functions
+function B0_click()
+    toggle(L0) 
+end
+
+function B1_click()
+    toggle(L1) 
+end
+
+function B2_click()
+    toggle(L2) 
+end
+
+function B3_click()
+    toggle(L1) 
+end
+
 
 -- Button long press custom functions
 function B0_long_press()

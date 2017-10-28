@@ -2,9 +2,9 @@
 -- Network Variables
 ssid = "Stotis"
 pass = "turekbabkiu"
-IPADR = "192.168.1.104"
+IPADR = "192.168.1.105"
 IPROUTER = "192.168.1.254"
-HOSTNAME = "vonia"
+HOSTNAME = "vaikuKambarys"
 
 -- Some SSR are active low...
 LIGHTS_ON = 1
@@ -21,7 +21,7 @@ print('Heap Size: ',node.heap(),'\n')
 
 -- Set static ip (no way to identify if connected to ap in this case)
 -- wifi.sta.setip({ip=IPADR,netmask="255.255.255.0",gateway=IPROUTER})
-wifi.sta.config {ssid=ssid,pwd=pass}
+wifi.sta.config(ssid,pass)
 wifi.sta.sethostname(HOSTNAME)
 
 -- Connect 
@@ -39,22 +39,20 @@ tmr.alarm(0, 1000, tmr.ALARM_AUTO, function()
         print("Netmask: ",nm)
         print("Gateway Addr: ",gw,'\n')
         tmr.unregister(0)
-        sync_time();
 
     end
 end)
 
 
 --delay button init for 10s for uart communication after reset
---
 tmr.alarm(1, 5000, tmr.ALARM_SINGLE, function()
     tmr.unregister(1)
 
 
     --set gpio mode. Disables uart
-    gpio.mode(B0, gpio.INT) 
-    gpio.trig(B0, 'both', debounce(onChange0))
+    gpio.mode(B0, gpio.INT, gpio.PULLUP) 
     gpio.write(B0, gpio.HIGH)
+    gpio.trig(B0, 'both', debounce(onChange0))
 
     gpio.mode(B1, gpio.INT, gpio.PULLUP) 
     gpio.write(B1, gpio.HIGH)
@@ -67,17 +65,17 @@ tmr.alarm(1, 5000, tmr.ALARM_SINGLE, function()
 
     gpio.mode(B3, gpio.INT, gpio.PULLUP) 
     gpio.write(B3, gpio.HIGH)
-    gpio.trig(B3, 'up', debounce(onChange3))
+    gpio.trig(B3, 'both', debounce(onChange3))
 
 end)
 
 
 ------ init pins
 -- ssr control
-L0 = 1 -- lempos
-L1 = 0 -- ledai
-L2 = 2 -- ventiliatorius
-L3 = 3 -- veidrodis
+L0 = 0
+L1 = 1
+L2 = 2
+L3 = 3
 
 --buttons
 B0 = 6
@@ -104,52 +102,15 @@ gpio.write(LED, 1)
 
 -- Button singleclick custom functions
 function B0_click()
-
-    --if main lights is on, then turn all off and return
-    if gpio.read(L0) == LIGHTS_ON then
-        gpio.write(L0,LIGHTS_OFF) -- turn off mirrot if lights off
-        gpio.write(L1,LIGHTS_OFF) -- turn off mirrot if lights off
-        gpio.write(L2,LIGHTS_OFF) -- turn off mirrot if lights off
-        gpio.write(L3,LIGHTS_OFF) -- turn off mirrot if lights off
-        return
-    end
-
-    --if hour is 1 - 5, toggle LEDS
-    hour = currentHour()
-    if (hour >= 1 and hour <= 5) then
-        toggle(L1) 
-    else
-        ret = toggle(L0) -- toggle lights 
-        gpio.write(L2,ret) -- toggle fan with same state
-        if ret == LIGHTS_OFF then
-            tmr.unregister(1)
-            gpio.write(L3,LIGHTS_OFF) -- turn off mirrot if lights off
-        end
-    end
-
+    toggle(L0) 
 end
 
 function B1_click()
-
-    --toggle heated mirror only if lights is on
-    if gpio.read(L0) == LIGHTS_ON then
-        toggle(L3)
-    end
-
+    toggle(L1) 
 end
 
 function B2_click()
-
-    toggle(L1) 
-
-    --if gpio.read(L0) == LIGHTS_ON then
-        --if toggle(L2) == LIGHTS_ON then
-            --blinkLED_cont(LED,90)
-        --else
-            --tmr.unregister(1)
-        --end
-    --end
-
+    toggle(L2) 
 end
 
 function B3_click()
@@ -160,14 +121,7 @@ end
 
 -- Button long press custom functions
 function B0_long_press()
-
-    ret = toggle(L0) -- toggle lights 
-    gpio.write(L2,ret) -- toggle fan with same state
-    if ret == LIGHTS_OFF then
-        tmr.unregister(1)
-        gpio.write(L3,LIGHTS_OFF) -- turn off mirrot if lights off
-    end
-
+    toggle_all() 
 end
 
 function B1_long_press()
@@ -198,7 +152,6 @@ function B3_long_press()
 
 end
 
-
-
 dofile("main.lua")
 dofile("buttons.lua")
+

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-	python2.7 nodemcu-uploader/nodemcu-uploader.py upload  \
+	python2.7 nodemcu-uploader/nodemcu-uploader.py --port /dev/ttyUSB0 upload  \
 			src/init_$1.lua:init.lua \
 			src/buttons.lua:buttons.lua \
 			src/tcp_server.lua:tcp_server.lua \
