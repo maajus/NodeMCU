@@ -59,10 +59,11 @@ function check_light(l)
     end
 end
 
-function write_light(l)
-    if(l == 1) then 
+function write_light(l,state)
+    if(state == 1) then 
         gpio.write(l, LIGHTS_ON);
-    else gpio.write(l, LIGHTS_OFF)
+    else 
+        gpio.write(l, LIGHTS_OFF)
     end
 end
 

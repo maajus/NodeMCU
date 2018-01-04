@@ -10,6 +10,26 @@ HOSTNAME = "vonia"
 LIGHTS_ON = 1
 LIGHTS_OFF = 0
 
+------ init pins
+-- ssr control
+L0 = 1 -- lempos
+L1 = 0 -- ledai
+L2 = 2 -- ventiliatorius
+L3 = 3 -- veidrodis
+
+--buttons
+B0 = 6
+B1 = 7
+B2 = 9 -- TX pin
+B3 = 10 -- RX pin
+
+-- DHT senor data pin
+dht_pin = 4
+
+-- LED pin
+LED = 5 
+
+
 
 -- Configure Wireless Internet
 wifi.setmode(wifi.STATION)
@@ -65,31 +85,13 @@ tmr.alarm(1, 5000, tmr.ALARM_SINGLE, function()
     gpio.write(B2, gpio.HIGH)
     gpio.trig(B2, 'both', debounce(onChange2))
 
-    gpio.mode(B3, gpio.INT, gpio.PULLUP) 
-    gpio.write(B3, gpio.HIGH)
-    gpio.trig(B3, 'up', debounce(onChange3))
+    gpio.mode(B3, gpio.INT, gpio.PULLDOWN) 
+    --gpio.write(B3, gpio.LOW)
+    gpio.trig(B3, 'both', pir)
 
 end)
 
 
------- init pins
--- ssr control
-L0 = 1 -- lempos
-L1 = 0 -- ledai
-L2 = 2 -- ventiliatorius
-L3 = 3 -- veidrodis
-
---buttons
-B0 = 6
-B1 = 7
-B2 = 9 -- TX pin
-B3 = 10 -- RX pin
-
--- DHT senor data pin
-dht_pin = 4
-
--- LED pin
-LED = 5 
 
 gpio.mode(LED, gpio.OUTPUT)
 
@@ -106,26 +108,27 @@ gpio.write(LED, 1)
 function B0_click()
 
     --if main lights is on, then turn all off and return
-    if gpio.read(L0) == LIGHTS_ON then
-        gpio.write(L0,LIGHTS_OFF) -- turn off mirrot if lights off
-        gpio.write(L1,LIGHTS_OFF) -- turn off mirrot if lights off
-        gpio.write(L2,LIGHTS_OFF) -- turn off mirrot if lights off
-        gpio.write(L3,LIGHTS_OFF) -- turn off mirrot if lights off
-        return
-    end
+    --if gpio.read(L0) == LIGHTS_ON then
+        --gpio.write(L0,LIGHTS_OFF) -- turn off mirrot if lights off
+        --gpio.write(L1,LIGHTS_OFF) -- turn off mirrot if lights off
+        --gpio.write(L2,LIGHTS_OFF) -- turn off mirrot if lights off
+        --gpio.write(L3,LIGHTS_OFF) -- turn off mirrot if lights off
+        --return
+    --end
 
     --if hour is 1 - 5, toggle LEDS
-    hour = currentHour()
-    if (hour >= 1 and hour <= 5) then
-        toggle(L1) 
-    else
+    --hour = currentHour()
+    --if (hour >= 1 and hour <= 5) then
+        --toggle(L1) 
+    --else
         ret = toggle(L0) -- toggle lights 
         gpio.write(L2,ret) -- toggle fan with same state
         if ret == LIGHTS_OFF then
             tmr.unregister(1)
             gpio.write(L3,LIGHTS_OFF) -- turn off mirrot if lights off
+            gpio.write(L1,LIGHTS_OFF) -- turn off leds if lights off
         end
-    end
+    --end
 
 end
 
@@ -198,6 +201,13 @@ function B3_long_press()
 
 end
 
+function pir()
+
+    if(gpio.read(L0) == LIGHTS_OFF) then
+        gpio.write(L1,gpio.read(B3));
+    end
+
+end
 
 
 dofile("main.lua")
