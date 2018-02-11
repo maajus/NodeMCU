@@ -19,10 +19,10 @@ srv:listen(5555, function(c)
         elseif (string.byte(data,1) == 65) then --A  all info
             read_dht();
             sck:send("A" .. temp .."_" .. humi .. "_" ..
-            check_light(L0) .. "_" ..
-            check_light(L1) .. "_" ..
-            check_light(L2) .. "_" ..
-            check_light(L3));
+            check_light(L[0]) .. "_" ..
+            check_light(L[1]) .. "_" ..
+            check_light(L[2]) .. "_" ..
+            check_light(L[3]));
         elseif (string.byte(data,1) == 76) then --L toggle light
             toggle(string.byte(data,2)-48)
             sck:send("L" .. gpio.read(string.byte(data,2)-48));

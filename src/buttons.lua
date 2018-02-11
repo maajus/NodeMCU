@@ -27,10 +27,10 @@ end
 function LEDstate()
 
     gpio.write(LED, 1)
-    --if (gpio.read(L0)==LIGHTS_OFF and
-        --gpio.read(L1)==LIGHTS_OFF and
-        --gpio.read(L2)==LIGHTS_OFF and
-        --gpio.read(L3)==LIGHTS_OFF) then
+    --if (gpio.read(L[0])==LIGHTS_OFF and
+        --gpio.read(L[1])==LIGHTS_OFF and
+        --gpio.read(L[2])==LIGHTS_OFF and
+        --gpio.read(L[3])==LIGHTS_OFF) then
         --gpio.write(LED, 1)
     --else
         --gpio.write(LED,0)

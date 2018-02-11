@@ -72,10 +72,10 @@ end)
 
 ------ init pins
 -- ssr control
-L0 = 0
-L1 = 1
-L2 = 2
-L3 = 3
+L[0] = 0
+L[1] = 1
+L[2] = 2
+L[3] = 3
 
 --buttons
 B0 = 6
@@ -92,29 +92,29 @@ LED = 5
 gpio.mode(LED, gpio.OUTPUT)
 
 -- Turn off all outputs
-gpio.write(L0, LIGHTS_OFF)
-gpio.write(L1, LIGHTS_OFF)
-gpio.write(L2, LIGHTS_OFF)
-gpio.write(L3, LIGHTS_OFF)
+gpio.write(L[0], LIGHTS_OFF)
+gpio.write(L[1], LIGHTS_OFF)
+gpio.write(L[2], LIGHTS_OFF)
+gpio.write(L[3], LIGHTS_OFF)
 
 -- Turn on led
 gpio.write(LED, 1)
 
 -- Button singleclick custom functions
 function B0_click()
-    toggle(L0) 
+    toggle(L[0]) 
 end
 
 function B1_click()
-    toggle(L1) 
+    toggle(L[1]) 
 end
 
 function B2_click()
-    toggle(L2) 
+    toggle(L[2]) 
 end
 
 function B3_click()
-    toggle(L3) 
+    toggle(L[3]) 
 end
 
 

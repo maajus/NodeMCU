@@ -12,10 +12,11 @@ LIGHTS_OFF = 0
 
 ------ init pins
 -- ssr control
-L0 = 1 -- lempos
-L1 = 0 -- ledai
-L2 = 2 -- ventiliatorius
-L3 = 3 -- veidrodis
+L = {};
+L[0] = 1 -- lempos
+L[1] = 0 -- ledai
+L[2] = 2 -- ventiliatorius
+L[3] = 3 -- veidrodis
 
 --buttons
 B0 = 6
@@ -96,10 +97,10 @@ end)
 gpio.mode(LED, gpio.OUTPUT)
 
 -- Turn off all outputs
-gpio.write(L0, LIGHTS_OFF)
-gpio.write(L1, LIGHTS_OFF)
-gpio.write(L2, LIGHTS_OFF)
-gpio.write(L3, LIGHTS_OFF)
+gpio.write(L[0], LIGHTS_OFF)
+gpio.write(L[1], LIGHTS_OFF)
+gpio.write(L[2], LIGHTS_OFF)
+gpio.write(L[3], LIGHTS_OFF)
 
 -- Turn on led
 gpio.write(LED, 1)
@@ -121,12 +122,12 @@ function B0_click()
     --if (hour >= 1 and hour <= 5) then
         --toggle(L1) 
     --else
-        ret = toggle(L0) -- toggle lights 
-        gpio.write(L2,ret) -- toggle fan with same state
+        ret = toggle(L[0]) -- toggle lights 
+        gpio.write(L[2],ret) -- toggle fan with same state
         if ret == LIGHTS_OFF then
             tmr.unregister(1)
-            gpio.write(L3,LIGHTS_OFF) -- turn off mirrot if lights off
-            gpio.write(L1,LIGHTS_OFF) -- turn off leds if lights off
+            gpio.write(L[3],LIGHTS_OFF) -- turn off mirrot if lights off
+            gpio.write(L[1],LIGHTS_OFF) -- turn off leds if lights off
         end
     --end
 
@@ -135,15 +136,15 @@ end
 function B1_click()
 
     --toggle heated mirror only if lights is on
-    if gpio.read(L0) == LIGHTS_ON then
-        toggle(L3)
+    if gpio.read(L[0]) == LIGHTS_ON then
+        toggle(L[3])
     end
 
 end
 
 function B2_click()
 
-    toggle(L1) 
+    toggle(L[1]) 
 
     --if gpio.read(L0) == LIGHTS_ON then
         --if toggle(L2) == LIGHTS_ON then
@@ -156,7 +157,7 @@ function B2_click()
 end
 
 function B3_click()
-    toggle(L3) 
+    toggle(L[3]) 
 end
 
 
@@ -164,11 +165,11 @@ end
 -- Button long press custom functions
 function B0_long_press()
 
-    ret = toggle(L0) -- toggle lights 
-    gpio.write(L2,ret) -- toggle fan with same state
+    ret = toggle(L[0]) -- toggle lights 
+    gpio.write(L[2],ret) -- toggle fan with same state
     if ret == LIGHTS_OFF then
         tmr.unregister(1)
-        gpio.write(L3,LIGHTS_OFF) -- turn off mirrot if lights off
+        gpio.write(L[3],LIGHTS_OFF) -- turn off mirrot if lights off
     end
 
 end
@@ -203,8 +204,8 @@ end
 
 function pir()
 
-    if(gpio.read(L0) == LIGHTS_OFF) then
-        gpio.write(L1,gpio.read(B3));
+    if(gpio.read(L[0]) == LIGHTS_OFF) then
+        gpio.write(L[1],gpio.read(B3));
     end
 
 end

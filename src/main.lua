@@ -22,10 +22,14 @@ function switch_all(en)
 
     if(en == 1) then val = LIGHTS_ON
         else val = LIGHTS_OFF end
-    gpio.write(L0, val)
-    gpio.write(L1, val)
-    gpio.write(L2, val)
-    gpio.write(L3, val)
+    gpio.write(L[0], val)
+    gpio.write(L[1], val)
+    gpio.write(L[2], val)
+    gpio.write(L[3], val)
+    gpio.write(L[4], val)
+    gpio.write(L[5], val)
+    gpio.write(L[6], val)
+    gpio.write(L[7], val)
 end
 
 -- toogle all lights
@@ -44,10 +48,10 @@ end
 
 -- Return true if at least one light is on
 function check_lights()
-    if(gpio.read(L0) == LIGHTS_ON) then return 1 end
-    if(gpio.read(L1) == LIGHTS_ON) then return 1 end
-    if(gpio.read(L2) == LIGHTS_ON) then return 1 end
-    if(gpio.read(L3) == LIGHTS_ON) then return 1 end
+    if(gpio.read(L[0]) == LIGHTS_ON) then return 1 end
+    if(gpio.read(L[1]) == LIGHTS_ON) then return 1 end
+    if(gpio.read(L[2]) == LIGHTS_ON) then return 1 end
+    if(gpio.read(L[3]) == LIGHTS_ON) then return 1 end
     return 0
 end
 
